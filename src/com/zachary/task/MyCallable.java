@@ -25,6 +25,11 @@ public class MyCallable implements Callable<Object> {
 	@Override
 	public Object call() throws Exception {
 		Thread.sleep(1000);
+		try {
+			int i = 1/0;
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 		return "handled : " + param;
 	}
 

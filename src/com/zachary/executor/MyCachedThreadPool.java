@@ -19,10 +19,12 @@ import com.zachary.task.MyRunnable;
  */
 public class MyCachedThreadPool {
 	public static void main(String[] args) throws Exception {
-		runnableTest();
+//		runnableTest();
 		callableTest();
 	}
-	public static void runnableTest(){
+
+	public static void runnableTest() {
+		Thread.setDefaultUncaughtExceptionHandler(new MyUncaughtExceptionHandler());
 		ExecutorService es = Executors.newCachedThreadPool();
 		for (int i = 0; i < 5; i++) {
 			es.execute(new MyRunnable());
@@ -37,16 +39,23 @@ public class MyCachedThreadPool {
 		es.shutdown();
 		System.out.println("shutdown after");
 	}
-	
+
 	public static void callableTest() throws Exception {
 		ExecutorService es = Executors.newCachedThreadPool();
 		List<Future<Object>> reList = new ArrayList<>();
 		for (int i = 0; i < 5; i++) {
-			reList.add(es.submit(new MyCallable(i+"")));
+			reList.add(es.submit(new MyCallable(i + "")));
 		}
 		for (Future<Object> future : reList) {
 			System.out.println(future.get());
 		}
 		es.shutdown();
+	}
+}
+
+class MyUncaughtExceptionHandler implements Thread.UncaughtExceptionHandler {
+	@Override
+	public void uncaughtException(Thread t, Throwable e) {
+		System.out.println("caught " + e);
 	}
 }
